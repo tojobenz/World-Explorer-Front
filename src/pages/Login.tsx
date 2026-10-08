@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { login, clearError } from '../store/slices/authSlice';
+import { LogIn, Mail, Lock } from 'lucide-react';
+import Alert from '../components/Alert';
+import Button from '../components/Button';
+import InputField from '../components/InputField';
+import AuthLayout from '../layouts/AuthLayout';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,13 +20,8 @@ const Login: React.FC = () => {
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setValidationErrors((prev) => ({ ...prev, [name]: '' }));
-  };
-
-  const validate = (): boolean => {
+  // Memoized validation for performance
+  const validate = useCallback((): boolean => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
@@ -36,6 +36,12 @@ const Login: React.FC = () => {
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
+  }, [formData]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setValidationErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,96 +58,69 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              create a new account
-            </Link>
-          </p>
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Sign in to your World Explorer account"
+      icon={<LogIn className="w-8 h-8 text-white" />}
+    >
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        <InputField
+          id="email"
+          name="email"
+          type="email"
+          label="Email address"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="john@example.com"
+          error={validationErrors.email}
+          icon={Mail}
+          autoComplete="email"
+          required
+        />
+
+        <InputField
+          id="password"
+          name="password"
+          type="password"
+          label="Password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="••••••••"
+          error={validationErrors.password}
+          icon={Lock}
+          autoComplete="current-password"
+          required
+        />
+
+        {error && <Alert type="error" message={error} />}
+
+        <div className="flex items-center justify-end">
+          <Link
+            to="/forgot-password"
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+          >
+            Forgot your password?
+          </Link>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  validationErrors.email ? 'border-red-300' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="john@example.com"
-              />
-              {validationErrors.email && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
-              )}
-            </div>
+        <Button
+          type="submit"
+          loading={loading}
+          fullWidth
+        >
+          Sign in
+        </Button>
+      </form>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  validationErrors.password ? 'border-red-300' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder="••••••••"
-              />
-              {validationErrors.password && (
-                <p className="mt-1 text-sm text-red-600">{validationErrors.password}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <Link
-                to="/forgot-password"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
+      <div className="mt-6 text-center">
+        <p className="text-sm text-gray-600">
+          Don't have an account?{' '}
+          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+            Create one now
+          </Link>
+        </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 };
 

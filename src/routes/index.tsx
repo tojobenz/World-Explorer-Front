@@ -6,6 +6,9 @@ import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 import Dashboard from '../pages/Dashboard';
+import Explore from '../pages/Explore';
+import Detail from '../pages/Detail';
+import Favorites from '../pages/Favorites';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -50,7 +53,31 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route
+        path="/explore"
+        element={
+          <ProtectedRoute>
+            <Explore />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/explore/:type/:pageId"
+        element={
+          <ProtectedRoute>
+            <Detail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/favorites"
+        element={
+          <ProtectedRoute>
+            <Favorites />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 };

@@ -1,28 +1,27 @@
 import React, { useState, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { resetPassword, clearError } from '../store/slices/authSlice';
-import { Lock, ArrowLeft, CheckCircle, Check } from 'lucide-react';
+import { register, clearError } from '../store/slices/authSlice';
+import { UserPlus, Mail, Lock, User, Check } from 'lucide-react';
 import { AuthLayout } from '../layouts';
 import { InputField, Button, Alert } from '../components';
 
-const ResetPassword: React.FC = () => {
+const Register: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] = useState({
     email: '',
-    token: searchParams.get('token') || '',
-    newPassword: '',
-    confirmPassword: '',
+    password: '',
+    firstName: '',
+    lastName: '',
   });
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [isSuccess, setIsSuccess] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<'weak' | 'medium' | 'strong' | null>(null);
 
-  // Memoized validation for performance
+  // Memoized validation function for performance
   const validate = useCallback((): boolean => {
     const errors: Record<string, string> = {};
 
@@ -32,26 +31,30 @@ const ResetPassword: React.FC = () => {
       errors.email = 'Invalid email format';
     }
 
-    if (!formData.token) {
-      errors.token = 'Token is required';
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      errors.password = 'Password must be at least 8 characters';
+    } else if (!/[A-Z]/.test(formData.password)) {
+      errors.password = 'Password must contain at least one uppercase letter';
+    } else if (!/[a-z]/.test(formData.password)) {
+      errors.password = 'Password must contain at least one lowercase letter';
+    } else if (!/[0-9]/.test(formData.password)) {
+      errors.password = 'Password must contain at least one digit';
+    } else if (!/[^a-zA-Z0-9]/.test(formData.password)) {
+      errors.password = 'Password must contain at least one special character';
     }
 
-    if (!formData.newPassword) {
-      errors.newPassword = 'Password is required';
-    } else if (formData.newPassword.length < 8) {
-      errors.newPassword = 'Password must be at least 8 characters';
-    } else if (!/[A-Z]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one uppercase letter';
-    } else if (!/[a-z]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one lowercase letter';
-    } else if (!/[0-9]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one digit';
-    } else if (!/[^a-zA-Z0-9]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one special character';
+    if (!formData.firstName) {
+      errors.firstName = 'First name is required';
+    } else if (formData.firstName.length > 50) {
+      errors.firstName = 'First name must not exceed 50 characters';
     }
 
-    if (formData.newPassword !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+    if (!formData.lastName) {
+      errors.lastName = 'Last name is required';
+    } else if (formData.lastName.length > 50) {
+      errors.lastName = 'Last name must not exceed 50 characters';
     }
 
     setValidationErrors(errors);
@@ -82,7 +85,7 @@ const ResetPassword: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setValidationErrors((prev) => ({ ...prev, [name]: '' }));
     
-    if (name === 'newPassword') {
+    if (name === 'password') {
       calculatePasswordStrength(value);
     }
   };
@@ -93,16 +96,10 @@ const ResetPassword: React.FC = () => {
 
     if (!validate()) return;
 
-    const result = await dispatch(
-      resetPassword({
-        email: formData.email,
-        token: formData.token,
-        newPassword: formData.newPassword,
-      })
-    );
+    const result = await dispatch(register(formData));
 
-    if (resetPassword.fulfilled.match(result)) {
-      setIsSuccess(true);
+    if (register.fulfilled.match(result)) {
+      navigate('/dashboard');
     }
   };
 
@@ -124,41 +121,41 @@ const ResetPassword: React.FC = () => {
     }
   };
 
-  // Success state
-  if (isSuccess) {
-    return (
-      <AuthLayout
-        title="Password reset successful"
-        subtitle=""
-        icon={<CheckCircle className="w-8 h-8 text-white" />}
-      >
-        <div className="text-center">
-          <p className="text-gray-600 mb-6">
-            Your password has been successfully reset. You can now sign in with your new password.
-          </p>
-          <Link
-            to="/login"
-            className="inline-flex items-center justify-center w-full"
-          >
-            <Button
-              icon={ArrowLeft}
-              fullWidth
-            >
-              Sign in to your account
-            </Button>
-          </Link>
-        </div>
-      </AuthLayout>
-    );
-  }
-
   return (
     <AuthLayout
-      title="Set new password"
-      subtitle="Enter your email and new password to reset your account"
-      icon={<Lock className="w-8 h-8 text-white" />}
+      title="Create your account"
+      subtitle="Join World Explorer and start your journey"
+      icon={<UserPlus className="w-8 h-8 text-white" />}
     >
       <form className="space-y-5" onSubmit={handleSubmit}>
+        <div className="grid grid-cols-2 gap-4">
+          <InputField
+            id="firstName"
+            name="firstName"
+            type="text"
+            label="First Name"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="John"
+            error={validationErrors.firstName}
+            icon={User}
+            required
+          />
+
+          <InputField
+            id="lastName"
+            name="lastName"
+            type="text"
+            label="Last Name"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Doe"
+            error={validationErrors.lastName}
+            icon={User}
+            required
+          />
+        </div>
+
         <InputField
           id="email"
           name="email"
@@ -168,40 +165,28 @@ const ResetPassword: React.FC = () => {
           onChange={handleChange}
           placeholder="john@example.com"
           error={validationErrors.email}
-          icon={Lock}
+          icon={Mail}
           autoComplete="email"
-          required
-        />
-
-        <InputField
-          id="token"
-          name="token"
-          type="text"
-          label="Reset token"
-          value={formData.token}
-          onChange={handleChange}
-          placeholder="Enter your reset token"
-          error={validationErrors.token}
           required
         />
 
         <div>
           <InputField
-            id="newPassword"
-            name="newPassword"
+            id="password"
+            name="password"
             type="password"
-            label="New password"
-            value={formData.newPassword}
+            label="Password"
+            value={formData.password}
             onChange={handleChange}
             placeholder="••••••••"
-            error={validationErrors.newPassword}
+            error={validationErrors.password}
             icon={Lock}
             autoComplete="new-password"
             required
           />
           
           {/* Password Strength Indicator */}
-          {formData.newPassword && (
+          {formData.password && (
             <div className="mt-2">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-gray-500">Password strength</span>
@@ -221,40 +206,33 @@ const ResetPassword: React.FC = () => {
               </div>
             </div>
           )}
-        </div>
-
-        <div>
-          <InputField
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            label="Confirm new password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="••••••••"
-            error={validationErrors.confirmPassword}
-            icon={Lock}
-            autoComplete="new-password"
-            required
-          />
           
-          {/* Password Match Indicator */}
-          {formData.confirmPassword && (
-            <div className={`mt-2 text-xs flex items-center ${
-              formData.newPassword === formData.confirmPassword ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {formData.newPassword === formData.confirmPassword ? (
-                <>
-                  <Check className="w-3 h-3 mr-1" />
-                  Passwords match
-                </>
-              ) : (
-                <>
-                  Passwords do not match
-                </>
-              )}
+          {/* Password Requirements */}
+          <div className="mt-3 space-y-1.5">
+            <p className="text-xs text-gray-500 font-medium">Password must contain:</p>
+            <div className="grid grid-cols-2 gap-1.5">
+              <div className={`flex items-center text-xs ${formData.password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>
+                <Check className="w-3 h-3 mr-1" />
+                8+ characters
+              </div>
+              <div className={`flex items-center text-xs ${/[A-Z]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
+                <Check className="w-3 h-3 mr-1" />
+                Uppercase
+              </div>
+              <div className={`flex items-center text-xs ${/[a-z]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
+                <Check className="w-3 h-3 mr-1" />
+                Lowercase
+              </div>
+              <div className={`flex items-center text-xs ${/[0-9]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
+                <Check className="w-3 h-3 mr-1" />
+                Number
+              </div>
+              <div className={`flex items-center text-xs ${/[^a-zA-Z0-9]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
+                <Check className="w-3 h-3 mr-1" />
+                Special char
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         {error && <Alert type="error" message={error} />}
@@ -264,21 +242,20 @@ const ResetPassword: React.FC = () => {
           loading={loading}
           fullWidth
         >
-          Reset password
+          Create account
         </Button>
       </form>
 
       <div className="mt-6 text-center">
-        <Link 
-          to="/login" 
-          className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to sign in
-        </Link>
+        <p className="text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+            Sign in instead
+          </Link>
+        </p>
       </div>
     </AuthLayout>
   );
 };
 
-export default ResetPassword;
+export default Register;
