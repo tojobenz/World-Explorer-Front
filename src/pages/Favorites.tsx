@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getAllFavorites } from '../store/slices/wikimediaSlice';
 import { Star, Clock, Landmark, User as UserIcon, MapPin } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Loading from '../components/Loading';
 
 const Favorites: React.FC = () => {
   const navigate = useNavigate();
@@ -27,10 +28,10 @@ const Favorites: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading favorites...</p>
+      <div className="min-h-screen bg-gray-100">
+        <Sidebar />
+        <div className="ml-64">
+          <Loading message="Chargement des favoris..." />
         </div>
       </div>
     );
@@ -42,11 +43,11 @@ const Favorites: React.FC = () => {
       {/* Header */}
       <div className="bg-white shadow-sm ml-64">
         <div className="px-6 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Mes favoris</h1>
           <p className="mt-2 text-gray-600">
             {favoritesCount > 0 
-              ? `You have ${favoritesCount} saved items`
-              : 'Start exploring and save your favorite items'
+              ? `Vous avez ${favoritesCount} éléments sauvegardés`
+              : 'Commencez à explorer et sauvegardez vos éléments préférés'
             }
           </p>
         </div>
@@ -56,12 +57,12 @@ const Favorites: React.FC = () => {
         {favoritesCount === 0 ? (
           <div className="text-center py-12">
             <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">No favorites yet</p>
+            <p className="text-gray-500">Aucun favori pour le moment</p>
             <button
               onClick={() => navigate('/explore')}
               className="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
             >
-              Start Exploring
+              Commencer l'exploration
             </button>
           </div>
         ) : (
@@ -71,7 +72,7 @@ const Favorites: React.FC = () => {
               <section>
                 <div className="flex items-center mb-4">
                   <Clock className="w-6 h-6 text-indigo-600 mr-2" />
-                  <h2 className="text-xl font-semibold text-gray-900">Historical Facts</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Faits historiques</h2>
                   <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
                     {favorites.facts.length}
                   </span>
@@ -143,7 +144,7 @@ const Favorites: React.FC = () => {
               <section>
                 <div className="flex items-center mb-4">
                   <UserIcon className="w-6 h-6 text-indigo-600 mr-2" />
-                  <h2 className="text-xl font-semibold text-gray-900">People</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Personnes</h2>
                   <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
                     {favorites.persons.length}
                   </span>
@@ -179,7 +180,7 @@ const Favorites: React.FC = () => {
               <section>
                 <div className="flex items-center mb-4">
                   <MapPin className="w-6 h-6 text-indigo-600 mr-2" />
-                  <h2 className="text-xl font-semibold text-gray-900">Places</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">Lieux</h2>
                   <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
                     {favorites.places.length}
                   </span>

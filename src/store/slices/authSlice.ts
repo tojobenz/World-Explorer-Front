@@ -9,6 +9,26 @@ import type {
   AuthResponse,
 } from '../../types/auth';
 
+const isTokenExpired = (token: string | null): boolean => {
+  if (!token) return true;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp;
+    if (!exp) return true;
+    return Date.now() >= exp * 1000;
+  } catch {
+    return true;
+  }
+};
+
+const storedToken = localStorage.getItem('token');
+const storedRefreshToken = localStorage.getItem('refreshToken');
+
+if (isTokenExpired(storedToken)) {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+}
+
 const initialState: AuthState = {
   user: null,
   token: localStorage.getItem('token'),

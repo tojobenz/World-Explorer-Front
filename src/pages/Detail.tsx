@@ -13,6 +13,7 @@ import {
 } from '../store/slices/wikimediaSlice';
 import { ArrowLeft, Star, MapPin, Calendar, User as UserIcon } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Loading from '../components/Loading';
 
 const Detail: React.FC = () => {
   const { type, pageId } = useParams<{ type: string; pageId: string }>();
@@ -99,20 +100,20 @@ const Detail: React.FC = () => {
     switch (type) {
       case 'facts':
         if ((item as any).date) metadata.push({ icon: Calendar, label: 'Date', value: (item as any).date });
-        if ((item as any).location) metadata.push({ icon: MapPin, label: 'Location', value: (item as any).location });
+        if ((item as any).location) metadata.push({ icon: MapPin, label: 'Lieu', value: (item as any).location });
         break;
       case 'monuments':
-        if ((item as any).location) metadata.push({ icon: MapPin, label: 'Location', value: (item as any).location });
-        if ((item as any).yearBuilt) metadata.push({ icon: Calendar, label: 'Year Built', value: (item as any).yearBuilt });
+        if ((item as any).location) metadata.push({ icon: MapPin, label: 'Lieu', value: (item as any).location });
+        if ((item as any).yearBuilt) metadata.push({ icon: Calendar, label: 'Année de construction', value: (item as any).yearBuilt });
         break;
       case 'persons':
-        if ((item as any).birthDate) metadata.push({ icon: Calendar, label: 'Birth Date', value: (item as any).birthDate });
-        if ((item as any).deathDate) metadata.push({ icon: Calendar, label: 'Death Date', value: (item as any).deathDate });
-        if ((item as any).occupation) metadata.push({ icon: UserIcon, label: 'Occupation', value: (item as any).occupation });
-        if ((item as any).nationality) metadata.push({ icon: MapPin, label: 'Nationality', value: (item as any).nationality });
+        if ((item as any).birthDate) metadata.push({ icon: Calendar, label: 'Date de naissance', value: (item as any).birthDate });
+        if ((item as any).deathDate) metadata.push({ icon: Calendar, label: 'Date de décès', value: (item as any).deathDate });
+        if ((item as any).occupation) metadata.push({ icon: UserIcon, label: 'Profession', value: (item as any).occupation });
+        if ((item as any).nationality) metadata.push({ icon: MapPin, label: 'Nationalité', value: (item as any).nationality });
         break;
       case 'places':
-        if ((item as any).country) metadata.push({ icon: MapPin, label: 'Country', value: (item as any).country });
+        if ((item as any).country) metadata.push({ icon: MapPin, label: 'Pays', value: (item as any).country });
         if ((item as any).population) metadata.push({ icon: UserIcon, label: 'Population', value: (item as any).population.toString() });
         break;
     }
@@ -124,10 +125,10 @@ const Detail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="min-h-screen bg-gray-100">
+        <Sidebar />
+        <div className="ml-64">
+          <Loading message="Chargement des détails..." />
         </div>
       </div>
     );
@@ -137,13 +138,13 @@ const Detail: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600 mb-2">Item not found</p>
-          <p className="text-sm text-gray-500 mb-4">Type: {type} | PageId: {pageId}</p>
+          <p className="text-gray-600 mb-2">Élément non trouvé</p>
+          <p className="text-sm text-gray-500 mb-4">Type : {type} | PageId : {pageId}</p>
           <button
             onClick={() => navigate('/explore')}
             className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           >
-            Back to Explore
+            Retour à l'exploration
           </button>
         </div>
       </div>
@@ -180,7 +181,7 @@ const Detail: React.FC = () => {
             className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Explore
+            Retour à l'exploration
           </button>
         </div>
       </div>
@@ -220,14 +221,14 @@ const Detail: React.FC = () => {
                 <Star
                   className={`w-5 h-5 mr-2 ${item.isFavorite ? 'fill-current' : ''}`}
                 />
-                {item.isFavorite ? 'Saved' : 'Save'}
+                {item.isFavorite ? 'Sauvegardé' : 'Sauvegarder'}
               </button>
             </div>
 
             {/* Extract / Description Details */}
             {extractText && (
               <div className="mb-6 bg-gray-50 p-6 rounded-xl border border-gray-100">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Details</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">Détails</h2>
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line text-base">
                   {extractText}
                 </p>
@@ -257,7 +258,7 @@ const Detail: React.FC = () => {
               <div className="flex items-center p-4 bg-gray-50 rounded-lg mb-6">
                 <MapPin className="w-5 h-5 text-indigo-600 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-500">Coordinates</p>
+                  <p className="text-sm text-gray-500">Coordonnées</p>
                   <p className="font-medium text-gray-900">{formattedCoordinates}</p>
                 </div>
               </div>
@@ -272,7 +273,7 @@ const Detail: React.FC = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                 >
-                  View on Wikipedia
+                  Voir sur Wikipedia
                 </a>
               </div>
             )}

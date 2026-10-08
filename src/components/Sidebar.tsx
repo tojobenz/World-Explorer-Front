@@ -30,8 +30,8 @@ const Sidebar: React.FC = () => {
     <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-10 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-gray-100">
-        <h1 className="text-2xl font-bold text-indigo-600">World Explorer</h1>
-        <p className="text-sm text-gray-500 mt-1">Your journey awaits</p>
+        <h1 className="text-2xl font-bold text-indigo-600">À découvrir</h1>
+        <p className="text-sm text-gray-500 mt-1">Votre voyage vous attend</p>
       </div>
       
       {/* Navigation */}
@@ -41,21 +41,21 @@ const Sidebar: React.FC = () => {
           className={`w-full flex items-center px-4 py-3 mb-1 rounded-lg transition-colors ${getActiveClass('/dashboard')}`}
         >
           <Activity className="w-5 h-5 mr-3" />
-          <span>Dashboard</span>
+          <span>Tableau de bord</span>
         </button>
         <button
           onClick={() => navigate('/explore')}
           className={`w-full flex items-center px-4 py-3 mb-1 rounded-lg transition-colors ${getActiveClass('/explore')}`}
         >
           <Search className="w-5 h-5 mr-3" />
-          <span>Explore</span>
+          <span>Explorer</span>
         </button>
         <button
           onClick={() => navigate('/favorites')}
           className={`w-full flex items-center px-4 py-3 mb-1 rounded-lg transition-colors ${getActiveClass('/favorites')}`}
         >
           <Star className="w-5 h-5 mr-3" />
-          <span>Favorites</span>
+          <span>Favoris</span>
         </button>
       </nav>
 
@@ -66,7 +66,7 @@ const Sidebar: React.FC = () => {
           className="flex items-center w-full px-4 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
         >
           <Clock className="w-5 h-5 mr-3" />
-          <span>Logout</span>
+          <span>Déconnexion</span>
         </button>
       </div>
     </aside>
