@@ -25,13 +25,13 @@ const Login: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Format d\'email invalide';
     }
 
     if (!formData.password) {
-      errors.password = 'Password is required';
+      errors.password = 'Le mot de passe est requis';
     }
 
     setValidationErrors(errors);
@@ -59,8 +59,8 @@ const Login: React.FC = () => {
 
   return (
     <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your World Explorer account"
+      title="Bon retour"
+      subtitle="Connectez-vous à votre compte"
       icon={<LogIn className="w-8 h-8 text-white" />}
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ const Login: React.FC = () => {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label="Adresse email"
           value={formData.email}
           onChange={handleChange}
           placeholder="john@example.com"
@@ -82,7 +82,7 @@ const Login: React.FC = () => {
           id="password"
           name="password"
           type="password"
-          label="Password"
+          label="Mot de passe"
           value={formData.password}
           onChange={handleChange}
           placeholder="••••••••"
@@ -99,7 +99,7 @@ const Login: React.FC = () => {
             to="/forgot-password"
             className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
           >
-            Forgot your password?
+            Mot de passe oublié ?
           </Link>
         </div>
 
@@ -108,17 +108,25 @@ const Login: React.FC = () => {
           loading={loading}
           fullWidth
         >
-          Sign in
+          Se connecter
         </Button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Don't have an account?{' '}
+          Vous n'avez pas de compte ?{' '}
           <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-            Create one now
+            Créer un compte
           </Link>
         </p>
+      </div>
+
+      {/* Admin credentials info */}
+      <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <p className="text-xs text-gray-500 mb-1">Compte par défaut :</p>
+        <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700 block">
+          {`{"email": "admin@test.com", "password": "Admin1234*"}`}
+        </code>
       </div>
     </AuthLayout>
   );

@@ -26,35 +26,35 @@ const Register: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Format d\'email invalide';
     }
 
     if (!formData.password) {
-      errors.password = 'Password is required';
+      errors.password = 'Le mot de passe est requis';
     } else if (formData.password.length < 8) {
-      errors.password = 'Password must be at least 8 characters';
+      errors.password = 'Le mot de passe doit contenir au moins 8 caractères';
     } else if (!/[A-Z]/.test(formData.password)) {
-      errors.password = 'Password must contain at least one uppercase letter';
+      errors.password = 'Le mot de passe doit contenir au moins une majuscule';
     } else if (!/[a-z]/.test(formData.password)) {
-      errors.password = 'Password must contain at least one lowercase letter';
+      errors.password = 'Le mot de passe doit contenir au moins une minuscule';
     } else if (!/[0-9]/.test(formData.password)) {
-      errors.password = 'Password must contain at least one digit';
+      errors.password = 'Le mot de passe doit contenir au moins un chiffre';
     } else if (!/[^a-zA-Z0-9]/.test(formData.password)) {
-      errors.password = 'Password must contain at least one special character';
+      errors.password = 'Le mot de passe doit contenir au moins un caractère spécial';
     }
 
     if (!formData.firstName) {
-      errors.firstName = 'First name is required';
+      errors.firstName = 'Le prénom est requis';
     } else if (formData.firstName.length > 50) {
-      errors.firstName = 'First name must not exceed 50 characters';
+      errors.firstName = 'Le prénom ne doit pas dépasser 50 caractères';
     }
 
     if (!formData.lastName) {
-      errors.lastName = 'Last name is required';
+      errors.lastName = 'Le nom est requis';
     } else if (formData.lastName.length > 50) {
-      errors.lastName = 'Last name must not exceed 50 characters';
+      errors.lastName = 'Le nom ne doit pas dépasser 50 caractères';
     }
 
     setValidationErrors(errors);
@@ -114,17 +114,17 @@ const Register: React.FC = () => {
 
   const getPasswordStrengthText = () => {
     switch (passwordStrength) {
-      case 'weak': return 'Weak';
-      case 'medium': return 'Medium';
-      case 'strong': return 'Strong';
+      case 'weak': return 'Faible';
+      case 'medium': return 'Moyen';
+      case 'strong': return 'Fort';
       default: return '';
     }
   };
 
   return (
     <AuthLayout
-      title="Create your account"
-      subtitle="Join World Explorer and start your journey"
+      title="Créer votre compte"
+      subtitle="Rejoignez-nous et commencez votre voyage"
       icon={<UserPlus className="w-8 h-8 text-white" />}
     >
       <form className="space-y-5" onSubmit={handleSubmit}>
@@ -133,7 +133,7 @@ const Register: React.FC = () => {
             id="firstName"
             name="firstName"
             type="text"
-            label="First Name"
+            label="Prénom"
             value={formData.firstName}
             onChange={handleChange}
             placeholder="John"
@@ -146,7 +146,7 @@ const Register: React.FC = () => {
             id="lastName"
             name="lastName"
             type="text"
-            label="Last Name"
+            label="Nom"
             value={formData.lastName}
             onChange={handleChange}
             placeholder="Doe"
@@ -160,7 +160,7 @@ const Register: React.FC = () => {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label="Adresse email"
           value={formData.email}
           onChange={handleChange}
           placeholder="john@example.com"
@@ -175,7 +175,7 @@ const Register: React.FC = () => {
             id="password"
             name="password"
             type="password"
-            label="Password"
+            label="Mot de passe"
             value={formData.password}
             onChange={handleChange}
             placeholder="••••••••"
@@ -189,7 +189,7 @@ const Register: React.FC = () => {
           {formData.password && (
             <div className="mt-2">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-500">Password strength</span>
+                <span className="text-xs text-gray-500">Force du mot de passe</span>
                 <span className={`text-xs font-medium ${
                   passwordStrength === 'weak' ? 'text-red-600' :
                   passwordStrength === 'medium' ? 'text-yellow-600' :
@@ -209,27 +209,27 @@ const Register: React.FC = () => {
           
           {/* Password Requirements */}
           <div className="mt-3 space-y-1.5">
-            <p className="text-xs text-gray-500 font-medium">Password must contain:</p>
+            <p className="text-xs text-gray-500 font-medium">Le mot de passe doit contenir :</p>
             <div className="grid grid-cols-2 gap-1.5">
               <div className={`flex items-center text-xs ${formData.password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>
                 <Check className="w-3 h-3 mr-1" />
-                8+ characters
+                8+ caractères
               </div>
               <div className={`flex items-center text-xs ${/[A-Z]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
                 <Check className="w-3 h-3 mr-1" />
-                Uppercase
+                Majuscule
               </div>
               <div className={`flex items-center text-xs ${/[a-z]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
                 <Check className="w-3 h-3 mr-1" />
-                Lowercase
+                Minuscule
               </div>
               <div className={`flex items-center text-xs ${/[0-9]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
                 <Check className="w-3 h-3 mr-1" />
-                Number
+                Chiffre
               </div>
               <div className={`flex items-center text-xs ${/[^a-zA-Z0-9]/.test(formData.password) ? 'text-green-600' : 'text-gray-400'}`}>
                 <Check className="w-3 h-3 mr-1" />
-                Special char
+                Caractère spécial
               </div>
             </div>
           </div>
@@ -242,15 +242,15 @@ const Register: React.FC = () => {
           loading={loading}
           fullWidth
         >
-          Create account
+          Créer un compte
         </Button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          Already have an account?{' '}
+          Vous avez déjà un compte ?{' '}
           <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-            Sign in instead
+            Se connecter
           </Link>
         </p>
       </div>

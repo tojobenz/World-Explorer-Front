@@ -17,6 +17,18 @@ const api = axios.create({
   },
 });
 
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (callback: (token: string) => void) => {
+  refreshSubscribers.push(callback);
+};
+
+const onTokenRefreshed = (token: string) => {
+  refreshSubscribers.forEach(callback => callback(token));
+  refreshSubscribers = [];
+};
+
 // Interceptor pour ajouter le token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
@@ -25,6 +37,57 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Interceptor pour gérer les erreurs 401 et refresh le token
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((token: string) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(api(originalRequest));
+          });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+
+      try {
+        const response = await api.post<ApiResponse<AuthResponse>>('/auth/refresh-token', refreshToken);
+        if (response.data.success && response.data.data) {
+          const { token: newToken, refreshToken: newRefreshToken } = response.data.data;
+          localStorage.setItem('token', newToken);
+          localStorage.setItem('refreshToken', newRefreshToken);
+          onTokenRefreshed(newToken);
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        }
+      } catch (refreshError) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const authApi = {
   register: async (data: RegisterRequest): Promise<ApiResponse<AuthResponse>> => {

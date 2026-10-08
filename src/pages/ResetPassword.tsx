@@ -27,31 +27,31 @@ const ResetPassword: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Format d\'email invalide';
     }
 
     if (!formData.token) {
-      errors.token = 'Token is required';
+      errors.token = 'Le jeton est requis';
     }
 
     if (!formData.newPassword) {
-      errors.newPassword = 'Password is required';
+      errors.newPassword = 'Le mot de passe est requis';
     } else if (formData.newPassword.length < 8) {
-      errors.newPassword = 'Password must be at least 8 characters';
+      errors.newPassword = 'Le mot de passe doit contenir au moins 8 caractères';
     } else if (!/[A-Z]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one uppercase letter';
+      errors.newPassword = 'Le mot de passe doit contenir au moins une majuscule';
     } else if (!/[a-z]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one lowercase letter';
+      errors.newPassword = 'Le mot de passe doit contenir au moins une minuscule';
     } else if (!/[0-9]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one digit';
+      errors.newPassword = 'Le mot de passe doit contenir au moins un chiffre';
     } else if (!/[^a-zA-Z0-9]/.test(formData.newPassword)) {
-      errors.newPassword = 'Password must contain at least one special character';
+      errors.newPassword = 'Le mot de passe doit contenir au moins un caractère spécial';
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+      errors.confirmPassword = 'Les mots de passe ne correspondent pas';
     }
 
     setValidationErrors(errors);
@@ -117,9 +117,9 @@ const ResetPassword: React.FC = () => {
 
   const getPasswordStrengthText = () => {
     switch (passwordStrength) {
-      case 'weak': return 'Weak';
-      case 'medium': return 'Medium';
-      case 'strong': return 'Strong';
+      case 'weak': return 'Faible';
+      case 'medium': return 'Moyen';
+      case 'strong': return 'Fort';
       default: return '';
     }
   };
@@ -128,13 +128,13 @@ const ResetPassword: React.FC = () => {
   if (isSuccess) {
     return (
       <AuthLayout
-        title="Password reset successful"
+        title="Réinitialisation du mot de passe réussie"
         subtitle=""
         icon={<CheckCircle className="w-8 h-8 text-white" />}
       >
         <div className="text-center">
           <p className="text-gray-600 mb-6">
-            Your password has been successfully reset. You can now sign in with your new password.
+            Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.
           </p>
           <Link
             to="/login"
@@ -144,7 +144,7 @@ const ResetPassword: React.FC = () => {
               icon={ArrowLeft}
               fullWidth
             >
-              Sign in to your account
+              Se connecter à votre compte
             </Button>
           </Link>
         </div>
@@ -154,8 +154,8 @@ const ResetPassword: React.FC = () => {
 
   return (
     <AuthLayout
-      title="Set new password"
-      subtitle="Enter your email and new password to reset your account"
+      title="Définir un nouveau mot de passe"
+      subtitle="Entrez votre email et votre nouveau mot de passe pour réinitialiser votre compte"
       icon={<Lock className="w-8 h-8 text-white" />}
     >
       <form className="space-y-5" onSubmit={handleSubmit}>
@@ -163,7 +163,7 @@ const ResetPassword: React.FC = () => {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label="Adresse email"
           value={formData.email}
           onChange={handleChange}
           placeholder="john@example.com"
@@ -177,10 +177,10 @@ const ResetPassword: React.FC = () => {
           id="token"
           name="token"
           type="text"
-          label="Reset token"
+          label="Jeton de réinitialisation"
           value={formData.token}
           onChange={handleChange}
-          placeholder="Enter your reset token"
+          placeholder="Entrez votre jeton de réinitialisation"
           error={validationErrors.token}
           required
         />
@@ -190,7 +190,7 @@ const ResetPassword: React.FC = () => {
             id="newPassword"
             name="newPassword"
             type="password"
-            label="New password"
+            label="Nouveau mot de passe"
             value={formData.newPassword}
             onChange={handleChange}
             placeholder="••••••••"
@@ -204,7 +204,7 @@ const ResetPassword: React.FC = () => {
           {formData.newPassword && (
             <div className="mt-2">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-500">Password strength</span>
+                <span className="text-xs text-gray-500">Force du mot de passe</span>
                 <span className={`text-xs font-medium ${
                   passwordStrength === 'weak' ? 'text-red-600' :
                   passwordStrength === 'medium' ? 'text-yellow-600' :
@@ -228,7 +228,7 @@ const ResetPassword: React.FC = () => {
             id="confirmPassword"
             name="confirmPassword"
             type="password"
-            label="Confirm new password"
+            label="Confirmer le nouveau mot de passe"
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="••••••••"
@@ -246,11 +246,11 @@ const ResetPassword: React.FC = () => {
               {formData.newPassword === formData.confirmPassword ? (
                 <>
                   <Check className="w-3 h-3 mr-1" />
-                  Passwords match
+                  Les mots de passe correspondent
                 </>
               ) : (
                 <>
-                  Passwords do not match
+                  Les mots de passe ne correspondent pas
                 </>
               )}
             </div>
@@ -264,7 +264,7 @@ const ResetPassword: React.FC = () => {
           loading={loading}
           fullWidth
         >
-          Reset password
+          Réinitialiser le mot de passe
         </Button>
       </form>
 
@@ -274,7 +274,7 @@ const ResetPassword: React.FC = () => {
           className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to sign in
+          Retour à la connexion
         </Link>
       </div>
     </AuthLayout>

@@ -13,6 +13,7 @@ import {
 } from '../store/slices/wikimediaSlice';
 import { Search, Star, MapPin, User, Landmark, Clock } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import Loading from '../components/Loading';
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
@@ -81,10 +82,10 @@ const Explore: React.FC = () => {
   );
 
   const tabs = [
-    { id: 'facts', label: 'Historical Facts', icon: Clock },
+    { id: 'facts', label: 'Faits historiques', icon: Clock },
     { id: 'monuments', label: 'Monuments', icon: Landmark },
-    { id: 'persons', label: 'People', icon: User },
-    { id: 'places', label: 'Places', icon: MapPin },
+    { id: 'persons', label: 'Personnes', icon: User },
+    { id: 'places', label: 'Lieux', icon: MapPin },
   ];
 
   const getResults = () => {
@@ -110,8 +111,8 @@ const Explore: React.FC = () => {
       {/* Header */}
       <div className="bg-white shadow-sm ml-64">
         <div className="px-6 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Explore the World</h1>
-          <p className="mt-2 text-gray-600">Discover historical facts, monuments, people, and places</p>
+          <h1 className="text-3xl font-bold text-gray-900">Explorer le monde</h1>
+          <p className="mt-2 text-gray-600">Découvrez des faits historiques, des monuments, des personnes et des lieux</p>
         </div>
       </div>
 
@@ -125,7 +126,7 @@ const Explore: React.FC = () => {
                 type="text"
                 value={localQuery}
                 onChange={(e) => setLocalQuery(e.target.value)}
-                placeholder="Search for facts, monuments, people, or places..."
+                placeholder="Rechercher des faits, monuments, personnes ou lieux..."
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
@@ -134,7 +135,7 @@ const Explore: React.FC = () => {
               disabled={loading}
               className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? 'Searching...' : 'Search'}
+              {loading ? 'Recherche en cours...' : 'Rechercher'}
             </button>
           </form>
         </div>
@@ -170,7 +171,9 @@ const Explore: React.FC = () => {
         )}
 
         {/* Results */}
-        {results.length > 0 ? (
+        {loading ? (
+          <Loading message="Connexion au serveur en cours..." />
+        ) : results.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {results.map((item: any) => (
               <div
@@ -205,23 +208,23 @@ const Explore: React.FC = () => {
                       <Star
                         className={`w-4 h-4 mr-1 ${item.isFavorite ? 'fill-current' : ''}`}
                       />
-                      {item.isFavorite ? 'Saved' : 'Save'}
+                      {item.isFavorite ? 'Sauvegardé' : 'Sauvegarder'}
                     </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        ) : !loading && hasSearched && localQuery ? (
+        ) : hasSearched && localQuery ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">No results found for "{localQuery}"</p>
+            <p className="text-gray-500">Aucun résultat trouvé pour "{localQuery}"</p>
           </div>
-        ) : !loading ? (
+        ) : (
           <div className="text-center py-12">
             <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Start by searching for something</p>
+            <p className="text-gray-500">Commencez par rechercher quelque chose</p>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );

@@ -22,9 +22,9 @@ const ForgotPassword: React.FC = () => {
     const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = 'Email is required';
+      errors.email = 'L\'email est requis';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Format d\'email invalide';
     }
 
     setValidationErrors(errors);
@@ -54,17 +54,17 @@ const ForgotPassword: React.FC = () => {
   if (isSubmitted) {
     return (
       <AuthLayout
-        title="Check your email"
+        title="Vérifiez votre email"
         subtitle=""
         icon={<CheckCircle className="w-8 h-8 text-white" />}
       >
         <div className="text-center">
           <p className="text-gray-600 mb-6">
-            We've sent a password reset link to{' '}
+            Nous avons envoyé un lien de réinitialisation du mot de passe à{' '}
             <span className="font-semibold text-gray-900">{formData.email}</span>
           </p>
           <p className="text-sm text-gray-500 mb-6">
-            The link will expire in 24 hours. If you don't receive it, check your spam folder.
+            Le lien expirera dans 24 heures. Si vous ne le recevez pas, vérifiez votre dossier spam.
           </p>
           <Link
             to="/login"
@@ -74,7 +74,7 @@ const ForgotPassword: React.FC = () => {
               icon={ArrowLeft}
               fullWidth
             >
-              Back to sign in
+              Retour à la connexion
             </Button>
           </Link>
         </div>
@@ -84,8 +84,8 @@ const ForgotPassword: React.FC = () => {
 
   return (
     <AuthLayout
-      title="Reset your password"
-      subtitle="Enter your email address and we'll send you a link to reset your password"
+      title="Réinitialiser votre mot de passe"
+      subtitle="Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe"
       icon={<Mail className="w-8 h-8 text-white" />}
     >
       <form className="space-y-6" onSubmit={handleSubmit}>
@@ -93,7 +93,7 @@ const ForgotPassword: React.FC = () => {
           id="email"
           name="email"
           type="email"
-          label="Email address"
+          label="Adresse email"
           value={formData.email}
           onChange={handleChange}
           placeholder="john@example.com"
@@ -110,7 +110,7 @@ const ForgotPassword: React.FC = () => {
           loading={loading}
           fullWidth
         >
-          Send reset link
+          Envoyer le lien de réinitialisation
         </Button>
       </form>
 
@@ -120,7 +120,7 @@ const ForgotPassword: React.FC = () => {
           className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Back to sign in
+          Retour à la connexion
         </Link>
       </div>
     </AuthLayout>
