@@ -1,17 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { logout } from '../store/slices/authSlice';
+import { useAppSelector } from '../store/hooks';
+import { CheckCircle, Clock, Shield, Activity, Search, Star } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
 
   if (!isAuthenticated) {
     navigate('/login');
@@ -19,128 +14,105 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-gray-900">Auth Dashboard</h1>
+    <div className="min-h-screen bg-gray-100">
+      <Sidebar />
+      {/* Main Content */}
+      <main className="ml-64 p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Welcome back!</h2>
+          <p className="text-gray-600 mt-2">Here's what's happening with your account today.</p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button
+              onClick={() => navigate('/explore')}
+              className="flex items-center justify-center px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg"
+            >
+              <Search className="w-5 h-5 mr-2" />
+              Explore the World
+            </button>
+            <button
+              onClick={() => navigate('/favorites')}
+              className="flex items-center justify-center px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              <Star className="w-5 h-5 mr-2" />
+              View Favorites
+            </button>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Account Status</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">Active</p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-full">
+                <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            <div className="flex items-center">
-              <button
-                onClick={handleLogout}
-                className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Logout
-              </button>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Session Time</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">--</p>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <Clock className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Security Level</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">High</p>
+              </div>
+              <div className="bg-purple-100 p-3 rounded-full">
+                <Shield className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Last Login</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">Today</p>
+              </div>
+              <div className="bg-indigo-100 p-3 rounded-full">
+                <Activity className="w-6 h-6 text-indigo-600" />
+              </div>
             </div>
           </div>
         </div>
-      </nav>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to Dashboard</h2>
-            <p className="text-gray-600 mb-6">
-              You are successfully authenticated!
-            </p>
-
-            <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Authentication Status</h3>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <span className="text-sm font-medium text-gray-500 w-40">Status:</span>
-                  <span className="text-sm text-green-600 font-medium">Authenticated</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-sm font-medium text-gray-500 w-40">Token:</span>
-                  <span className="text-sm text-gray-900 font-mono break-all">
-                    {token?.substring(0, 20)}...
-                  </span>
-                </div>
+        {/* Token Info Card */}
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Authentication Information</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-500">Status</label>
+              <div className="mt-1 flex items-center">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  <span className="w-1.5 h-1.5 bg-green-600 rounded-full mr-1.5"></span>
+                  Authenticated
+                </span>
               </div>
             </div>
-
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white shadow rounded-lg p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">User Profile</dt>
-                      <dd className="text-lg font-medium text-gray-900">Active</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white shadow rounded-lg p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Session</dt>
-                      <dd className="text-lg font-medium text-gray-900">Valid</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white shadow rounded-lg p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Security</dt>
-                      <dd className="text-lg font-medium text-gray-900">Enabled</dd>
-                    </dl>
-                  </div>
-                </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">Access Token</label>
+              <div className="mt-1 p-3 bg-gray-50 rounded-lg font-mono text-sm text-gray-700 break-all">
+                {token?.substring(0, 40)}...
               </div>
             </div>
           </div>
