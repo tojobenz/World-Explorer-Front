@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import AppRoutes from './routes';
+import { useAppDispatch } from './store/hooks';
 import { refreshToken } from './store/slices/authSlice';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const checkTokenValidity = () => {
