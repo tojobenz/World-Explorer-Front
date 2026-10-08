@@ -6,7 +6,6 @@ import type {
   LoginRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-  AuthResponse,
 } from '../../types/auth';
 
 const isTokenExpired = (token: string | null): boolean => {
@@ -22,7 +21,6 @@ const isTokenExpired = (token: string | null): boolean => {
 };
 
 const storedToken = localStorage.getItem('token');
-const storedRefreshToken = localStorage.getItem('refreshToken');
 
 if (isTokenExpired(storedToken)) {
   localStorage.removeItem('token');
