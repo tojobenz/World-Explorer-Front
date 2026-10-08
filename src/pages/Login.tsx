@@ -120,6 +120,14 @@ const Login: React.FC = () => {
           </Link>
         </p>
       </div>
+
+      {/* Admin credentials info */}
+      <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <p className="text-xs text-gray-500 mb-1">Compte par défaut :</p>
+        <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-700 block">
+          {`{"email": "admin@test.com", "password": "Admin1234*"}`}
+        </code>
+      </div>
     </AuthLayout>
   );
 };
