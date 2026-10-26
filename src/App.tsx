@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from './routes';
 import { useAppDispatch } from './store/hooks';
@@ -38,6 +39,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <AppRoutes />
+      <Analytics />
     </Router>
   );
 };
